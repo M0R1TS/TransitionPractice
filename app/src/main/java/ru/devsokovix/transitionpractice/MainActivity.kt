@@ -4,6 +4,7 @@ import android.graphics.*
 import android.os.Bundle
 import android.transition.*
 import android.util.TypedValue
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -22,14 +23,19 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         enableEdgeToEdge()
         setContentView(binding.root)
-        binding.img.scaleX = 0.5F
-        binding.img.scaleY = 0.5F
-        var i = 0
+        var expanded = false
+        val transitionSet = TransitionSet()
+            .addTransition(ChangeBounds())
+            .addTransition(ChangeImageTransform())
+
         binding.img.setOnClickListener{
-            TransitionManager.beginDelayedTransition(binding.root, ChangeImageTransform())
-            binding.img.scaleType = ImageView.ScaleType.values()[i % ImageView.ScaleType.values().size]
-            i++
-            Toast.makeText(this, binding.img.scaleType.name, Toast.LENGTH_LONG).show()
+            expanded = !expanded
+            TransitionManager.beginDelayedTransition(binding.root, transitionSet)
+            val params: ViewGroup.LayoutParams = binding.img.layoutParams
+            params.height = if (expanded) ViewGroup.LayoutParams.MATCH_PARENT else ViewGroup.LayoutParams.WRAP_CONTENT
+            binding.img.layoutParams = params
+
+            binding.img.scaleType = if (expanded) ImageView.ScaleType.CENTER_CROP else ImageView.ScaleType.FIT_CENTER
         }
     }
 }
