@@ -4,6 +4,8 @@ import android.graphics.*
 import android.os.Bundle
 import android.transition.*
 import android.util.TypedValue
+import android.widget.ImageView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.*
@@ -20,18 +22,14 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         enableEdgeToEdge()
         setContentView(binding.root)
-        val width =
-            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 420F, resources.displayMetrics)
-                .toInt()
-        val height =
-            TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 280F, resources.displayMetrics)
-                .toInt()
-        val rect1 = Rect(0, 0, width / 2, height / 2)
-        val rect2 = Rect(0, 0, width, height)
-        binding.img.clipBounds = rect1
-        binding.img.setOnClickListener {
-            TransitionManager.beginDelayedTransition(binding.root, ChangeClipBounds())
-            binding.img.clipBounds = if (binding.img.clipBounds == rect1) rect2 else rect1
+        binding.img.scaleX = 0.5F
+        binding.img.scaleY = 0.5F
+        var i = 0
+        binding.img.setOnClickListener{
+            TransitionManager.beginDelayedTransition(binding.root, ChangeImageTransform())
+            binding.img.scaleType = ImageView.ScaleType.values()[i % ImageView.ScaleType.values().size]
+            i++
+            Toast.makeText(this, binding.img.scaleType.name, Toast.LENGTH_LONG).show()
         }
     }
 }
